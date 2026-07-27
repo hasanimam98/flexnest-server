@@ -7,6 +7,7 @@ const cookieParser = require("cookie-parser");
 const { connectDB } = require("./config/db");
 
 const userRoutes = require("./routes/userRoutes");
+const bookingRoutes = require("./routes/bookingRoutes");
 
 
 const app = express();
@@ -17,8 +18,10 @@ app.use(express.json());
 app.use(cookieParser());
 
 
-
+// Routes
 app.use("/users", userRoutes);
+
+app.use("/bookings", bookingRoutes);
 
 
 
@@ -35,6 +38,7 @@ const PORT = process.env.PORT || 5000;
 
 
 connectDB()
+
 .then(()=>{
 
   app.listen(PORT, ()=>{

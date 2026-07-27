@@ -6,30 +6,35 @@ const { getDB } = require("../config/db");
 
 
 
-// Save Booking
+// Create Post
+
 router.post("/", async (req, res) => {
 
   try {
 
-    const booking = req.body;
+
+    const post = req.body;
+
 
     const db = getDB();
 
 
     const result = await db
-      .collection("bookings")
-      .insertOne(booking);
+      .collection("posts")
+      .insertOne(post);
+
 
 
     res.send({
 
       success: true,
 
-      message: "Booking saved successfully",
+      message: "Post created successfully",
 
       insertedId: result.insertedId
 
     });
+
 
 
   } catch(error) {
@@ -37,9 +42,9 @@ router.post("/", async (req, res) => {
 
     res.status(500).send({
 
-      success: false,
+      success:false,
 
-      message: error.message
+      message:error.message
 
     });
 
@@ -52,43 +57,45 @@ router.post("/", async (req, res) => {
 
 
 
-// Get User Bookings
-router.get("/:email", async (req, res) => {
+// Get All Posts
 
-  try {
+router.get("/", async(req,res)=>{
 
-    const email = req.params.email;
+
+  try{
 
 
     const db = getDB();
 
 
-    const bookings = await db
-      .collection("bookings")
-      .find({
-        userEmail: email
+    const posts = await db
+      .collection("posts")
+      .find()
+      .sort({
+        _id:-1
       })
       .toArray();
 
 
 
-    res.send(bookings);
+    res.send(posts);
 
 
 
-  } catch(error) {
+  }catch(error){
 
 
     res.status(500).send({
 
-      success: false,
+      success:false,
 
-      message: error.message
+      message:error.message
 
     });
 
 
   }
+
 
 });
 
