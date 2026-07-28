@@ -6,12 +6,13 @@ const { getDB } = require("../config/db");
 
 
 
-// Save User after Firebase Register
 
-router.post("/", async (req,res)=>{
+// Create User after Register
+
+router.post("/", async (req, res) => {
 
 
-  try{
+  try {
 
 
     const user = req.body;
@@ -24,8 +25,9 @@ router.post("/", async (req,res)=>{
     const existingUser = await db
       .collection("users")
       .findOne({
-        email:user.email
+        email: user.email
       });
+
 
 
 
@@ -44,22 +46,30 @@ router.post("/", async (req,res)=>{
 
 
 
-
     const newUser = {
 
 
-      name:user.name,
+      name: user.name,
 
-      email:user.email,
+      email: user.email,
 
-      image:user.image || "",
+      image: user.image || "",
 
-      role:"user",
 
-      status:"active",
+      role: "user",
+
+
+      status: "active",
+
+
+      trainerStatus: "none",
+
+
+      createdAt: new Date()
 
 
     };
+
 
 
 
@@ -71,20 +81,24 @@ router.post("/", async (req,res)=>{
 
 
 
+
     res.send({
 
       success:true,
 
       message:"User created successfully",
 
-      insertedId:result.insertedId
+      insertedId: result.insertedId
 
 
     });
 
 
 
-  }catch(error){
+  }
+
+
+  catch(error){
 
 
     res.status(500).send({
@@ -99,6 +113,7 @@ router.post("/", async (req,res)=>{
   }
 
 
+
 });
 
 
@@ -107,7 +122,10 @@ router.post("/", async (req,res)=>{
 
 
 
-// Get User by Email
+
+
+// Get User By Email
+
 
 router.get("/:email", async(req,res)=>{
 
@@ -116,6 +134,59 @@ router.get("/:email", async(req,res)=>{
 
 
     const email = req.params.email;
+
+
+
+    const db = getDB();
+
+
+
+    const user = await db
+      .collection("users")
+      .findOne({
+
+        email:email
+
+      });
+
+
+
+
+    res.send(user);
+
+
+
+  }
+
+
+  catch(error){
+
+
+    res.status(500).send({
+
+      success:false,
+
+      message:error.message
+
+    });
+
+
+  }
+
+
+
+});
+const verifyToken = require("../middleware/verifyToken");
+
+
+
+router.get("/profile/data", verifyToken, async(req,res)=>{
+
+
+  try{
+
+
+    const email = req.user.email;
 
 
     const db = getDB();

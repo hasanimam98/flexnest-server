@@ -1,4 +1,7 @@
 require("dotenv").config();
+const authRoutes = require("./routes/authRoutes");
+const trainerRoutes = require("./routes/trainerRoutes");
+const authRoutes = require("./routes/authRoutes");
 
 const express = require("express");
 const cors = require("cors");
@@ -14,7 +17,11 @@ const postRoutes = require("./routes/postRoutes");
 const app = express();
 
 
-app.use(cors());
+app.use(cors({
+  origin:"http://localhost:3001",
+  credentials:true
+}));
+app.use("/trainer-applications", trainerRoutes);
 
 app.use(express.json());
 
@@ -23,10 +30,12 @@ app.use(cookieParser());
 
 
 // Routes
+app.use("/auth", authRoutes);
 
 app.use("/users", userRoutes);
 
 app.use("/bookings", bookingRoutes);
+app.use("/auth", authRoutes);
 
 app.use("/posts", postRoutes);
 
