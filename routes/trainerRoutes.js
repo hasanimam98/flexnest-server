@@ -1,48 +1,79 @@
 const express = require("express");
-
 const router = express.Router();
 
 const { getDB } = require("../config/db");
 
-router.post("/", async (req, res) => {
+
+// Get all trainer applications
+router.get("/", async (req, res) => {
 
   try {
 
-    const application = req.body;
-
     const db = getDB();
 
-    const existing = await db
+    const applications = await db
       .collection("trainerApplications")
-      .findOne({
-        email: application.email
-      });
+      .find()
+      .toArray();
 
-    if (existing) {
-      return res.send({
-        success: false,
-        message: "You have already applied."
-      });
-    }
 
-    const result = await db
-      .collection("trainerApplications")
-      .insertOne(application);
-
-    res.send({
-      success: true,
-      insertedId: result.insertedId
-    });
+    res.send(applications);
 
   } catch (error) {
 
     res.status(500).send({
-      success: false,
-      message: error.message
+      message: "Failed to get trainer applications",
+      error: error.message
     });
 
   }
 
 });
+
+
+
+// Update trainer application status
+router.patch("/:id", async (req, res) => {
+
+  try {
+
+    const { ObjectId } = require("mongodb");
+
+    const db = getDB();
+
+    const id = req.params.id;
+
+    const { status } = req.body;
+
+
+    const result = await db
+      .collection("trainerApplications")
+      .updateOne(
+        {
+          _id: new ObjectId(id)
+        },
+        {
+          $set:{
+            status: status
+          }
+        }
+      );
+
+
+    res.send(result);
+
+
+  } catch(error){
+
+    res.status(500).send({
+      message:"Status update failed",
+      error:error.message
+    });
+
+  }
+
+});
+
+
 
 module.exports = router;
