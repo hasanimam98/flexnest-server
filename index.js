@@ -31,7 +31,8 @@ app.use(cors({
   origin: [
     "http://localhost:3000",
     "http://localhost:3001",
-    "https://studynook-client-psi.vercel.app"
+    "https://studynook-client-psi.vercel.app",
+    "https://studynook-client-ngyl7iv6p-hasanimam98s-projects.vercel.app"
   ],
   credentials: true
 }));
